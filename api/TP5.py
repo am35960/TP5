@@ -127,6 +127,11 @@ def calculateEquartType(coupleData,B0,B1):
 
 def calculateInterval(desiredX, coupleData, equartType, B0, B1, avrg_X):
 
+	validateData(equartType)
+	validateData(B0)
+	validateData(B1)
+	validateData(avrg_X)
+
 	intervals = {'70':0.0, '90':0.0}
 
 	tTable70 = [1.963, 1.386, 1.250, 1.190, 1.156, 1.134, 1.119, 1.108, 1.100, 1.093, 1.088, 1.083, 1.079, 1.076]
@@ -190,8 +195,8 @@ def main():
 	print('Pour un X de {}'.format(desiredX))
 	print('interval 90% = {}'.format(intervals['90']))
 	print('interval 70% = {}'.format(intervals['70']))
-	print('L\'intervale Y a 90 est de {} a {}'.format(estimatedY - intervals['90'], estimatedY + intervals['90']))
-	print('L\'intervale Y a 70 est de {} a {}'.format(estimatedY - intervals['70'], estimatedY + intervals['70']))
+	print('L\'intervalle Y a 90 est de {} a {}'.format(estimatedY - intervals['90'], estimatedY + intervals['90']))
+	print('L\'intervalle Y a 70 est de {} a {}'.format(estimatedY - intervals['70'], estimatedY + intervals['70']))
 	print('_______________________________________________________')
 
 
