@@ -11,6 +11,7 @@ def readArguments():
 	parser = argparse.ArgumentParser(description='TP5 – Intervalles de confiance')
 	parser.add_argument('--path', action="store_true", help='Le chemin de la racine vers le fichier CSV')
 	parser.add_argument('--x', action="store_true", help='Le x de la valeur estime.')
+	parser.add_argument('--l', action="store_true", help='Le x de la valeur estime.')
 
 	return parser.parse_args()
 
@@ -79,14 +80,20 @@ def GetBaseData(coupleData):
 		baseData['sum_X'] += X
 		baseData['sum_Y'] += Y
 
+	if(baseData['n'] == 0):
+		baseData['n'] = 1
 
 	baseData['n'] = len(coupleData)
 	baseData['avrg_X'] = baseData['sum_X'] / baseData['n']
 	baseData['avrg_Y'] = baseData['sum_Y'] / baseData['n']
 
-	baseData['B1'] = (sum_XmultY - baseData['n'] * baseData['avrg_X'] * baseData['avrg_Y']) / \
-      (sum_XmultX - baseData['n'] * baseData['avrg_X'] * baseData['avrg_X'])
+	baseData['B1'] = (sum_XmultY - baseData['n'] * baseData['avrg_X'] * baseData['avrg_Y'])
+	lowerB1 = (sum_XmultX - baseData['n'] * baseData['avrg_X'] * baseData['avrg_X'])
 
+	if(lowerB1 == 0):
+		lowerB1 = 1;
+
+	baseData['B1'] = baseData['B1'] / lowerB1
 	baseData['B0'] =  baseData['avrg_Y'] - baseData['B1'] *  baseData['avrg_X']
 
 	return baseData
@@ -157,6 +164,11 @@ def calculateInterval(desiredX, coupleData, equartType, B0, B1, avrg_X):
 		sqr_V = V * V
 		sum__sqr_V += sqr_V
 
+		if(sum__sqr_V == 0):
+			sum__sqr_V = 1
+
+		if(n == 0):
+			n = 1
 
 	racine = sqrt(1 + (1/n) + ((desiredX - avrg_X) * (desiredX - avrg_X) / sum__sqr_V))
 	intervals['70'] = tTable70[ dl -1] * equartType  * racine
@@ -174,6 +186,7 @@ def main():
 	args = readArguments();
 	argsX = args.x
 	argsPath = args.path
+	argsL = args.l
 
 	if(argsX):
 		desiredX = argsX
@@ -181,6 +194,10 @@ def main():
 
 	if(argsPath):
 		csvPathName = argsPath
+
+	if(argsL):
+		nbrOfLineToSkipInCsv = argsL
+		validateData(nbrOfLineToSkipInCsv)
 
 
 	desiredX = float(desiredX)
